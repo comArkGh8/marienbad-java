@@ -3,36 +3,26 @@ package marienbad;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 
 
 public class RowOperations {
     
-    public static int getNumberNonZeroRows(MarienbadBoard board){
-        int numberZeros = 0;
-        for (int index=0;index<4;index++){
-            if (board.rowsOfSticks.get(index)==0){
-                numberZeros+=1;
-            }
-        }
-        return 4-numberZeros;
-    }
-    
     /**
-     * gets the number
-     * of sticks in a specified row 
      * 
+     * @param stick_array - will already have zeros removed
+     * @return
      */
-    
-    public static int getSticksInRow(MarienbadBoard board, int row){
-        int numSticks = board.rowsOfSticks.get(row-1);
-        return numSticks;
+    public static int getNumberNonZeroRows(int[] stick_array){
+        return stick_array.length;
     }
-    
-  
-
     
     
     /**
@@ -40,13 +30,20 @@ public class RowOperations {
      * @param board - input board
      * @return sorted Array of non-zeros in ascending order
      */
-    
-    public static ArrayList<Integer> sortedNonZeroBoard(MarienbadBoard board){
-        ArrayList<Integer> sorted = new ArrayList<Integer>(board.rowsOfSticks);
-        ArrayList<Integer> zeroList = new ArrayList<Integer>(0);
-        Collections.sort(sorted);
-        sorted.removeAll(zeroList);
-        return sorted;
+    public static HashMap<Integer,Integer> sortedByIncreasingSticks(MarienbadBoard board){
+        
+        //TODO: IM HERE!!!
+        HashMap<Integer, Integer> sortedSticksMap = board.rowsOfSticks
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey, 
+                                Map.Entry::getValue, 
+                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        
+        return sortedSticksMap;
     }
     
     /**
