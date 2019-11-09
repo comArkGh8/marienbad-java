@@ -2,12 +2,13 @@ package marienbad;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class MarienbadBoard {
     
-    public List<Integer> rowsOfSticks;
+    public HashMap<Integer, Integer> rowsOfSticks;
 
     
     /* Rep invariant: 
@@ -16,33 +17,31 @@ public class MarienbadBoard {
     
     /**
      * Make an initial board
+     * here 1 => 7, 2 => 5, 3 => 3, 4 => 1
      */
-    
-    
-    public MarienbadBoard() {
-        List<Integer> initialBoard = Arrays.asList(1,3,5,7);
-        this.rowsOfSticks = initialBoard;
+    public MarienbadBoard() {      
+        this.rowsOfSticks  = new HashMap<Integer, Integer>() {{
+            put(1, 7);
+            put(2, 5);
+            put(3, 3);
+            put(1, 1);
+        }};
     }
-
 
     /**
      * Make a Board.
      * input are the no. of sticks in the four rows (as a list)
      */
     
-    public MarienbadBoard(List<Integer> stickList) {
+    public MarienbadBoard(HashMap<Integer, Integer> stickList) {
         this.rowsOfSticks = stickList;
     }
 
     
-    public MarienbadBoard change(int row, int sticks){
-        List<Integer> originalList = this.rowsOfSticks;
-        Integer[] stickArray= (Integer[]) originalList.toArray();
-        stickArray[row-1]=originalList.get(row-1) -sticks;
-        // now create new list of rows with updated sticks
-        List<Integer> updatedSticks = Arrays.asList(stickArray);
-        this.rowsOfSticks = updatedSticks;
-        return this;
+    public void change(int row, int sticks){
+        HashMap<Integer, Integer> sticksMap = this.rowsOfSticks;
+        int originalSticks = sticksMap.get(row);
+        this.rowsOfSticks.put(row, originalSticks -sticks);
     }
 
 
