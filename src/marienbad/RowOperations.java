@@ -38,14 +38,19 @@ public class RowOperations {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(
                         Collectors.toMap(
-                                Map.Entry::getKey, 
-                                Map.Entry::getValue, 
-                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                            Map.Entry::getKey, 
+                            Map.Entry::getValue, 
+                            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    
+        HashMap<Integer, Integer> sortedMinusZeros = sortedSticksMap.entrySet().stream()
+                .filter(x -> x.getValue() != 0)
+                .collect(
+                        Collectors.toMap(
+                            Map.Entry::getKey, 
+                            Map.Entry::getValue, 
+                            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         
-        // change the board (it is mutable)
-        board.rowsOfSticks = sortedSticksMap;
-        
-        return sortedSticksMap;
+        return sortedMinusZeros;
     }
     
     /**
