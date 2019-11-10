@@ -21,8 +21,8 @@ public class RowOperations {
      * @param stick_array - will already have zeros removed
      * @return
      */
-    public static int getNumberNonZeroRows(int[] stick_array){
-        return stick_array.length;
+    public static int getNumberNonZeroRows(List<Integer> stick_array){
+        return stick_array.size();
     }
     
     

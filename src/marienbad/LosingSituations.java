@@ -1,217 +1,83 @@
 package marienbad;
 
+import java.util.HashMap;
+import java.util.List;
+
+
+
+/**
+# this class of methods looks at all the possible losing hands 
+# in the game of Marienbad.  grouped according to 
+# number of non-zero rows, they are:
+# row = 1: 1 
+# 
+# case row = 2:
+#   if two are same (and not 1), then loses, else wins
+# 
+# case row = 3:
+#   if smallest = 1: next are sum == 3 or 6
+#   1,1,1
+#   3,2,1
+#   next two are separate special cases
+#   5,4,1
+#   6,4,2 
+#   next are sum = 14
+#   7,5,2
+#   7,4,3
+#   6,5,3
+#   
+# case row = 4: 
+#   n,n,1,1 (sum = 2*low + 2*high)
+#   next are covered by sum == 14 or 16
+#   7,4,2,1
+#   6,5,2,1
+#   6,4,3,1
+#   7,5,3,1
+*/
+
 public class LosingSituations {
     
-    
-    
-    
-    /**
-     * 
-     * @param gameBoard
-     * @return true if not done, false if only one stick left
-     */
-    
-    public static boolean notLostYet(MarienbadBoard gameBoard){
-        // need number of nonZeroRows = 1
-        // and max number = 1
+    public static boolean stickArrayIsLoser(List<Integer> stick_array) {
         
-        int numberRows = RowOperations.getNumberNonZeroRows(gameBoard);
-        int maxNumber = RowOperations.getMaxStick(gameBoard);
-        if (numberRows == 1 && maxNumber == 1){
-            return false;
-        }
-        return true;
-    }
-    
-    
-
-    
-
-    /**
-     * 
-     * @param gameBoard - assuming there are only two non-zero rows
-     * @return - true if it is a losing hand
-     * 
-     */
-    public static boolean caseTwoRows(MarienbadBoard gameBoard){
-        // algorithm: if maxSticks>1
-        // and two are same, then loses, else wins
-        
-        int maxSticks = RowOperations.getMaxStick(gameBoard);
-        int maxRow = RowOperations.getMaxRow(gameBoard);
-        if (maxSticks==1){
-            return false;
-        }
-        
-        // find other non-zero row
-        int otherRow=0;
-        for (int index = 0; index<4; index++){
-            if (index+1 != maxRow && gameBoard.rowsOfSticks.get(index)>0){
-                otherRow=index+1;
-            }
-        }
-        
-        if (gameBoard.rowsOfSticks.get(otherRow-1)==gameBoard.rowsOfSticks.get(maxRow-1)){
+        int sumOfSticks = stick_array.stream()
+                .reduce(0, Integer::sum);
+        if (sumOfSticks == 1) {
             return true;
         }
-        return false;
-    }
-    
-    /**
-     * 
-     * @param gameBoard - assumes three non-zero rows
-     * @return -true if it is losing
-     */
-    
-    public static boolean caseThreeRows(MarienbadBoard gameBoard){
-        // losing situations of 3 rows
-        // they are:
-        //  1,1,1
-        //  3,2,1
-        //  5,4,1
-        //  6,4,2
-        //  7,5,2
-        //  7,4,3
-        //  6,5,3
         
-        int minNumber = RowOperations.getSmallestNonZero(gameBoard);
-        int secondSmallest = RowOperations.getSecondSmallestNonZero(gameBoard);
-        int maxNumber = RowOperations.getMaxStick(gameBoard);
-        
-        switch (minNumber) {
-            case 1:
-                switch(secondSmallest) {
-                    case 1: if (maxNumber == 1){
-                            return true;
-                        }
-                        return false;
-                    
-                    case 2: if (maxNumber == 3){
-                            return true;
-                        }
-                        else{
-                            return false;
-                        }
-                        
-                    case 4:if (maxNumber == 5){
-                        return true;
-                        }
-                        else{
-                            return false;
-                        }
-                   
-                }
-                return false;
-            
-            case 2: 
-                if (secondSmallest == 4 && maxNumber == 6){
-                    return true;
-                }
-                if (secondSmallest == 5 && maxNumber == 7){
-                    return true;
-                }
-                return false;
-                
-            case 3:
-                if (secondSmallest == 4 && maxNumber == 7){
-                    return true;
-                }
-                if (secondSmallest == 5 && maxNumber == 6){
-                    return true;
-                }
-                return false;
-                
+        // else we handle the situation in cases
+        // the next belongs to 3 or 4 rows
+        if ((sumOfSticks == 14) || (sumOfSticks == 16)) {
+            return true;
         }
+        
+    // TODO: IM HERE!!!!!
+    switch (RowOperations.getNumberNonZeroRows(stick_array)) {
+    
+    case 2:  
+      return true if stick_array[0]>1 && 
+        RowOperations.array_has_repeated_row?(stick_array)
+    
+    case 3:
+      return true if (stick_array == [1,4,5]) || 
+        (stick_array == [2,4,6])
+      
+      return true if stick_array[0]==1 && ((sum_of_sticks == 3) ||
+        (sum_of_sticks == 6))
+      
+    case 4:
+      return true if sum_of_sticks == (2*stick_array[0] + 
+        2*stick_array[2])
 
-                
+    }
+        
+        
+        
         return false;
+        
     }
     
-    public static boolean caseFourRows(MarienbadBoard gameBoard){
-        // losing situations of 4 rows
-        // they are:
-        //  n,n,1,1
-        //  7,4,2,1
-        //  6,5,2,1
-        //  6,4,3,1
-        //  7,5,3,1
-        //  k,k,2,2
-        //  5,4,3,2
-        //  DONE!!!
-        
-        
-        
-        int minNumber = RowOperations.getSmallestNonZero(gameBoard);
-        int secondSmallest = RowOperations.getSecondSmallestNonZero(gameBoard);
-        int secondHighest = RowOperations.getSecondHighestNonZero(gameBoard);
-        int maxNumber = RowOperations.getMaxStick(gameBoard);
-        
-        switch (minNumber){
-        case 1:
-            switch (secondSmallest){
-            case 1:
-                if (secondHighest == maxNumber){
-                    return true;
-                }
-                return false;
-                
-            case 2:
-                switch (secondHighest){
-                case 4:
-                    if (maxNumber == 7){
-                        return true;
-                    }
-                    return false;
-                    
-                case 5: 
-                    if (maxNumber == 6){
-                        return true;
-                    }
-                    return false;
-                }
-                
-            case 3:
-                switch (secondHighest){
-                case 4:
-                    if (maxNumber == 6){
-                        return true;
-                    }
-                    return false;
-                    
-                case 5:
-                    if (maxNumber == 7){
-                        return true;
-                    }
-                    return false;
-                    
-                }
-                
-            }
-            
-        case 2:
-            switch (secondSmallest){
-            case 2:
-                if (secondHighest == maxNumber){
-                    return true;
-                }
-                return false;
-                
-            case 3: 
-                switch (secondHighest){
-                case 4: 
-                    if (maxNumber == 5){
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
-            }
-            
-           
-        }
-        
-        
-        return false;
-    }
+    
+
     
 }
