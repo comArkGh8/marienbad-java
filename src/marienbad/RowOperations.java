@@ -32,7 +32,6 @@ public class RowOperations {
      */
     public static HashMap<Integer,Integer> sortedByIncreasingSticks(MarienbadBoard board){
         
-        //TODO: IM HERE!!!
         HashMap<Integer, Integer> sortedSticksMap = board.rowsOfSticks
                 .entrySet()
                 .stream()
@@ -42,6 +41,9 @@ public class RowOperations {
                                 Map.Entry::getKey, 
                                 Map.Entry::getValue, 
                                 (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        
+        // change the board (it is mutable)
+        board.rowsOfSticks = sortedSticksMap;
         
         return sortedSticksMap;
     }

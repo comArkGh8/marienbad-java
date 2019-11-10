@@ -1,9 +1,7 @@
 package marienbad;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.HashMap;
-import java.util.List;
 
 
 public class MarienbadBoard {
@@ -24,7 +22,7 @@ public class MarienbadBoard {
             put(1, 7);
             put(2, 5);
             put(3, 3);
-            put(1, 1);
+            put(4, 1);
         }};
     }
 
