@@ -60,41 +60,37 @@ public class LosingSituations {
             return true;
         }
         
-    switch (RowOperations.getNumberNonZeroRows(stick_array)) {
-    
-    case 2:  
-        if ((stick_array.get(0) > 1) && (RowOperations.arrayHasRepeatedRow(stick_array))) {
-            return true;
+        switch (RowOperations.getNumberNonZeroRows(stick_array)) {
+        
+            case 2:  
+                if ((stick_array.get(0) > 1) && (RowOperations.arrayHasRepeatedRow(stick_array))) {
+                    return true;
+                }
+            
+            case 3:
+                // express stick_array as set and compare to set(1,4,5) and set(2,4,6)
+                Set<Integer> stickSet = new HashSet<>(stick_array);
+                
+                Set<Integer> compareSetOne = new HashSet<Integer>();
+                compareSetOne.addAll( Arrays.asList( 1, 4, 5));
+              
+                Set<Integer> compareSetTwo = new HashSet<Integer>();
+                compareSetTwo.addAll( Arrays.asList( 2, 4, 6));
+                
+                if (stickSet.equals(compareSetOne) || stickSet.equals(compareSetTwo)) {
+                    return true;
+                }
+                
+                if ( (stick_array.get(0) == 1) && (sumOfSticks == 3)   || (sumOfSticks == 6) ) {
+                    return true;
+                }
+              
+            case 4:
+                if (sumOfSticks == (2*stick_array.get(0) + 2*stick_array.get(2))) {
+                    return true;
+                }
         }
-    
-    case 3:
-        // express stick_array as set and compare to set(1,4,5) and set(2,4,6)
-        Set<Integer> stickSet = new HashSet<>(stick_array);
-        
-        Set<Integer> compareSetOne = new HashSet<Integer>();
-        compareSetOne.addAll( Arrays.asList( 1, 4, 5));
-      
-        Set<Integer> compareSetTwo = new HashSet<Integer>();
-        compareSetTwo.addAll( Arrays.asList( 2, 4, 6));
-        
-        if (stickSet.equals(compareSetOne) || stickSet.equals(compareSetTwo)) {
-            return true;
-        }
-        
-        if ( (stick_array.get(0) == 1) && (sumOfSticks == 3)   || (sumOfSticks == 6) ) {
-            return true;
-        }
-
-        //TODO: IM HERE!!!!
-      
-    case 4:
-      return true if sum_of_sticks == (2*stick_array[0] + 
-        2*stick_array[2])
-
-    }
-        
-        
-        
+                  
         return false;
         
     }
