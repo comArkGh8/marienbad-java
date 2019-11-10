@@ -53,6 +53,34 @@ public class RowOperations {
         return sortedMinusZeros;
     }
     
+    
+    
+    
+    
+    // returns (row or sticks) in kth order (from 1-number of non-zero)
+    public static int getOrderAt(String rowOrSticks, int k, MarienbadBoard board) {
+        HashMap<Integer,Integer> sortedMap = sortedByIncreasingSticks(board);
+        switch (rowOrSticks) {
+            case "row":
+                List<Integer> rows = new ArrayList<>(sortedMap.keySet());
+                int kthOrderedRow = rows.get(k-1);
+                return kthOrderedRow;
+                
+            case "sticks":
+                List<Integer> sticks = new ArrayList<>(sortedMap.values());
+                int kthOrderedSticks = sticks.get(k-1);
+                return kthOrderedSticks;
+        }
+          
+        return 0;
+    }
+    
+    
+    
+    
+    
+    
+    
     /**
      * gets the minimum (non-zero) number
      * of sticks in a single row 
