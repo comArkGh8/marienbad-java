@@ -1,7 +1,10 @@
 package marienbad;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 
@@ -37,6 +40,12 @@ import java.util.List;
 
 public class LosingSituations {
     
+    /**
+     * 
+     * @param stick_array - has to be ordered in increasing number of sticks
+     * @return
+     */
+    
     public static boolean stickArrayIsLoser(List<Integer> stick_array) {
         
         int sumOfSticks = stick_array.stream()
@@ -51,19 +60,32 @@ public class LosingSituations {
             return true;
         }
         
-    // TODO: IM HERE!!!!!
     switch (RowOperations.getNumberNonZeroRows(stick_array)) {
     
     case 2:  
-      return true if stick_array[0]>1 && 
-        RowOperations.array_has_repeated_row?(stick_array)
+        if ((stick_array.get(0) > 1) && (RowOperations.arrayHasRepeatedRow(stick_array))) {
+            return true;
+        }
     
     case 3:
-      return true if (stick_array == [1,4,5]) || 
-        (stick_array == [2,4,6])
+        // express stick_array as set and compare to set(1,4,5) and set(2,4,6)
+        Set<Integer> stickSet = new HashSet<>(stick_array);
+        
+        Set<Integer> compareSetOne = new HashSet<Integer>();
+        compareSetOne.addAll( Arrays.asList( 1, 4, 5));
       
-      return true if stick_array[0]==1 && ((sum_of_sticks == 3) ||
-        (sum_of_sticks == 6))
+        Set<Integer> compareSetTwo = new HashSet<Integer>();
+        compareSetTwo.addAll( Arrays.asList( 2, 4, 6));
+        
+        if (stickSet.equals(compareSetOne) || stickSet.equals(compareSetTwo)) {
+            return true;
+        }
+        
+        if ( (stick_array.get(0) == 1) && (sumOfSticks == 3)   || (sumOfSticks == 6) ) {
+            return true;
+        }
+
+        //TODO: IM HERE!!!!
       
     case 4:
       return true if sum_of_sticks == (2*stick_array[0] + 
