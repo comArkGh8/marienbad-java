@@ -49,7 +49,7 @@ public class LosingSituations {
     public static boolean stickArrayIsLoser(List<Integer> stick_array) {
         
         int sumOfSticks = stick_array.stream()
-                .reduce(0, Integer::sum);
+                                    .reduce(0, Integer::sum);
         if (sumOfSticks == 1) {
             return true;
         }

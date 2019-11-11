@@ -2,7 +2,9 @@ package marienbad;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import marienbad.MarienbadBoard;
 import marienbad.RowOperations;
@@ -11,292 +13,114 @@ public class ChoiceOperations {
     
     /**
      * 
-     * @param gameBoard - assumes only one non zero row
+     * @param gameBoard - assumes not lost yet (i.e. board is not 1000)
      * @return - best choice if not 1
      */
-    public static List<Integer> bestChoiceOne (MarienbadBoard gameBoard){
-        // strategy:
-        // returns just one stick
+    public static List<Integer> bestChoice (MarienbadBoard gameBoard){
         
-        int maxRow = RowOperations.getMaxRow(gameBoard);
-        int maxSticks = RowOperations.getMaxStick(gameBoard);
+        HashMap<Integer,Integer> rowSticksMap = gameBoard.rowsOfSticks;
+        HashMap<Integer,Integer> sortedMap = RowOperations.sortedByIncreasingSticks(rowSticksMap);
+        List<Integer> sortedList = new ArrayList<>(sortedMap.values());
         
-        int sticksToTake=maxSticks-1;
-        
-        List<Integer> choiceList = Arrays.asList(maxRow,sticksToTake); 
-        return choiceList;
-        
-    }
-    
-    
-    /**
-     * 
-     * @param gameBoard - assumes exactly 2 non zero rows
-     * @return - best choice for two rows
-     */
-    
-    public static List<Integer> bestChoiceTwo (MarienbadBoard gameBoard){
-        // strategy:
-        // if min = 1 then remove row
-        // if max and min same choose 1 from max 
-        // else make of form n,n
-        
-        int maxRow = RowOperations.getMaxRow(gameBoard);
-        
-        int maxSticks = RowOperations.getMaxStick(gameBoard);
-        int minSticks = RowOperations.getSmallestNonZero(gameBoard);
-        
-        int sticksToTake;
-        
-        if (minSticks==1){
-            sticksToTake = maxSticks;
-            List<Integer> choiceList = Arrays.asList(maxRow,sticksToTake); 
-            return choiceList;
+        List<Integer> compareList = Arrays.asList(1,3,5,7);
+        if (sortedList.equals(compareList)) {
+            Random r = new Random();
+            int randomRow = r.nextInt(4) + 1;
+            int totalSticks = 1+2*(randomRow -1);
+            int randomSticks = r.nextInt(totalSticks)+1;
+            
+            List<Integer> choice = Arrays.asList(randomRow,randomSticks);
+            
+            return choice;
         }
-        
-        if (maxSticks==minSticks){
-            List<Integer> choiceList = Arrays.asList(maxRow,1);
-            return choiceList;
-        }
-        else{
-            sticksToTake = maxSticks-minSticks;
-            List<Integer> choiceList = Arrays.asList(maxRow,sticksToTake); 
-            return choiceList;
-        }
-        
-    }
-    
 
-    /**
-     * 
-     * @param gameBoard assumes has exactly three non-zero rows
-     * @return a list of length 2 with (row, number to take)
-     */
-    public static List<Integer> bestChoiceThree (MarienbadBoard gameBoard){
-        // strategy:
-        // if a loss choose a random (max-1) else...
-        // check if row removal leads to win (loss for opponent)
-        // if not reduce to one of the losses for three rows
+        int numberOfRows = RowOperations.getNumberNonZeroRows(sortedList);
+        // get the row with the maximum number of sticks
+        int maxRow = RowOperations.getOrderAt("row", numberOfRows, sortedMap);
         
-        
-        
-        int maxRow = RowOperations.getMaxRow(gameBoard);
-        int minRow = RowOperations.getMinRow(gameBoard);
-        int secRow = RowOperations.getSecondSmallestRow(gameBoard);
-        
-        int maxSticks = RowOperations.getMaxStick(gameBoard);
-        int sticksToTake;
-        List<Integer> choiceList = Arrays.asList(maxRow,maxSticks); 
-        
-        
-        if (LosingSituations.caseThreeRows(gameBoard)) {
-            choiceList = Arrays.asList(maxRow,1);
-            return choiceList;
+        if (LosingSituations.stickArrayIsLoser(sortedList)) {
+            List<Integer> choice = Arrays.asList(maxRow,1);
+            return choice;
         }
-        
-        else{
-            // check if can reduce it to two rows
-            for (int row=1; row<=4; row++){
-                MarienbadBoard removeRowGame = RowOperations.removeRow(gameBoard,row);
-                // first make certain a non-zero row was removed
-                if (RowOperations.getNumberNonZeroRows(removeRowGame)==2){
-                    if (LosingSituations.caseTwoRows(removeRowGame)){
-                        sticksToTake = RowOperations.getSticksInRow(gameBoard,row);
-                        choiceList = Arrays.asList(row,sticksToTake);
-                        return choiceList;
-                    }
-                }
 
-            }
-            // if cant reduce to two rows need to go case by case 
+        // TODO: finish rest from here!
+          
+          # check if removing a row produces a loser
+          sorted_map.keys.each{|index|
+            # get array with index removed
+            array_index_removed = sorted_map.select{|k,v| k!=index }.values
+            return [index,sorted_map[index]] if 
+              LosingSituations.stick_array_is_loser?(array_index_removed)
+          }
+          
+          # else go through case by case of numbers of non-zero rows
+          case number_of_rows
             
-            int minNumber = RowOperations.getSmallestNonZero(gameBoard);
-            int secondSmallest = RowOperations.getSecondSmallestNonZero(gameBoard);
+            when 1 # do number- 1
+              one_row = sorted_map.keys[0]
+              one_sticks = sorted_map.values[0]
+              return [one_row, one_sticks-1]
+              
+            when 2 # do max - min
+              min_sticks = get_order_at("sticks",1)
+              return [max_row, sorted_map[max_row]-min_sticks]
+              
+            when 3 # check case by case according to first two in array
+              first_two_in_stick_array = sorted_array[0,2]
+              max_sticks = get_order_at("sticks",3)
+              
+              case first_two_in_stick_array
+                when [1,1] then return [max_row, max_sticks -1]
+                  
+                when [1,2] then return [max_row, max_sticks -3] if max_sticks>3
+                  
+                when [1,3] then return [max_row, max_sticks -2]
+                  
+                when [1,4] then return [max_row, max_sticks -5]
+                  
+                when [1,5] then return [max_row, max_sticks -4]
+                  
+                when [2,3] then return [max_row, max_sticks -1]
+                  
+              end
+              
+            when 4
+              # check for double rows and change to min min k k
+              if has_repeated_row?
+                # first get other rows
+                other_rows = [1,2,3,4] - two_same
+                # get sorted map, select by other rows
+                sorted_others = sorted_map.select{|k,v| other_rows.include? k }
+                min_others = sorted_others.values[0]
+                max_others = sorted_others.values[1]
+                max_row_others = sorted_others.keys[1]
+                return [max_row_others, max_others-min_others]
+              end
             
-            List<Integer> numbers = Arrays.asList(minNumber,secondSmallest,maxSticks);
-            
-            switch (minNumber) {
-            case 1:  
-                switch(secondSmallest) {
-                    case 1: 
-                        sticksToTake = maxSticks -1;
-                        choiceList = Arrays.asList(maxRow,sticksToTake);
-                        return choiceList;
-                    
-                    case 2: if (maxSticks >3){
-                        sticksToTake = maxSticks -3;
-                        choiceList = Arrays.asList(maxRow,sticksToTake);
-                        return choiceList;
-                    }
-                    
-                    case 3: 
-                        sticksToTake = maxSticks -2;
-                        choiceList = Arrays.asList(maxRow,sticksToTake);
-                        return choiceList;
-                    
-                        
-                    case 4:
-                        sticksToTake = maxSticks -5;
-                        choiceList = Arrays.asList(maxRow,sticksToTake);
-                        return choiceList;
-                    
-                    case 5:
-                        sticksToTake = maxSticks -4;
-                        choiceList = Arrays.asList(maxRow,sticksToTake);
-                        return choiceList;
-                    
-                }
-            
-            case 2: 
-                switch(secondSmallest) {
-                    case 3:
-                        sticksToTake = maxSticks -1;
-                        choiceList = Arrays.asList(maxRow,sticksToTake);
-                        return choiceList;
-                    
-                    case 4: 
-                        switch(maxSticks) {
-                            case 5: 
-                                // sticksToTake = 2 - 1
-                                sticksToTake = 1;
-                                choiceList = Arrays.asList(minRow,sticksToTake);
-                                return choiceList;
-                                
-                            case 7:
-                                // sticksToTake = 7-6
-                                sticksToTake = 1;
-                                choiceList = Arrays.asList(maxRow,sticksToTake);
-                                return choiceList;
-                        }
-                        
-                    case 5:
-                        if (maxSticks == 6){
-                            // change 5 to 4; sticksToTake = 5-4
-                            sticksToTake = 1;
-                            choiceList = Arrays.asList(secRow,sticksToTake);
-                            return choiceList;
-                        }
-                }
-                
-            case 3:
-                switch(secondSmallest) {
-                    case 4:
-                        switch(maxSticks) {
-                        case 5: 
-                            // change 3 to 1
-                            // sticksToTake = 3 - 1
-                            sticksToTake = 2;
-                            choiceList = Arrays.asList(minRow,sticksToTake);
-                            return choiceList;
-                            
-                        case 6:
-                            // sticksToTake = 3-2
-                            sticksToTake = 1;
-                            choiceList = Arrays.asList(minRow,sticksToTake);
-                            return choiceList;
-                    }
-                        
-                    case 5: 
-                        // only winning is 7,5,3 -> 7,5,2
-                        sticksToTake = 1;
-                        choiceList = Arrays.asList(minRow,sticksToTake);
-                        return choiceList;
-                }        
-           
-        }
-            
-        
-        // end of else    
-        }
-        
-        return choiceList;
-    }
-    
-    
-    
-    public static List<Integer> bestChoiceFour (MarienbadBoard gameBoard){
-        // strategy:
-        // if a loss choose a random (max-1) else...
-        // check if row removal leads to win (loss for opponent)
-        // if not reduce to one of the losses for three rows
-        
-        
-        int maxRow = RowOperations.getMaxRow(gameBoard);
-
-        
-        int maxSticks = RowOperations.getMaxStick(gameBoard);
-        int sticksToTake;
-        List<Integer> choiceList = Arrays.asList(maxRow,maxSticks); 
-        
-        int minSticks = RowOperations.getSmallestNonZero(gameBoard);
-        int secSticks = RowOperations.getSecondSmallestNonZero(gameBoard);
-        int thirdSticks = RowOperations.getSecondHighestNonZero(gameBoard);
-        
-        
-        
-        if (LosingSituations.caseFourRows(gameBoard)) {
-            choiceList = Arrays.asList(maxRow,1);
-            return choiceList;
-        }
-        
-        else{
-            // check if can reduce it to three rows
-            for (int row=1; row<=4; row++){
-                MarienbadBoard removeRowGame = RowOperations.removeRow(gameBoard,row);
-                // removeRowGame must have three non-zero rows automatically
-                if (LosingSituations.caseThreeRows(removeRowGame)){
-                    sticksToTake = RowOperations.getSticksInRow(gameBoard,row);
-                    choiceList = Arrays.asList(row,sticksToTake);
-                    return choiceList;
-                }
-            }
-            // if cant reduce to three rows need to go case by case 
-            
-            // first if there are two rows equal 
-            // then change to min min k k
-            if (RowOperations.twoRowsAreSame(gameBoard)){
-                List<Integer> twoSameRows = RowOperations.getTwoSameRows(gameBoard);
-                ArrayList<Integer> twoSameArray= new ArrayList(twoSameRows);
-                ArrayList<Integer> otherRows = new ArrayList(Arrays.asList(1,2,3,4));
-                otherRows.removeAll(twoSameArray);
-                int firstOther = otherRows.get(0);
-                int secondOther = otherRows.get(1);
-                int difference = gameBoard.rowsOfSticks.get(firstOther-1)-gameBoard.rowsOfSticks.get(secondOther-1);
-                sticksToTake = Math.abs(difference);
-                
-                if (difference > 0){
-                    choiceList = Arrays.asList(firstOther,sticksToTake);
-                }
-                else{
-                    choiceList = Arrays.asList(secondOther,sticksToTake);
-                }
-            }
-            
-            switch (minSticks){
-            case 1:
-                switch (secSticks){
-                case 3:
-                    switch (thirdSticks){
-                    case 4:
-                        // max =7, all other cases handled by losing in 3 rows...
-                        if (maxSticks == 7){
-                            sticksToTake = 1;
-                            choiceList = Arrays.asList(maxRow,sticksToTake);
-                            return choiceList;
-                        }
-                    }
-                }
-                
-
-                
-            }
-            
-            
-            
-        }
-        
-        
-        return choiceList;
-    }
+          end
+          
+          # rest are point cases 
+          min_row = get_order_at("row",1)
+          mid_row = get_order_at("row",2)
+          
+          case sorted_array
+            when [2,4,5] then return [min_row, 1]
+              
+            when [2,4,7] then return [max_row, 1]
+              
+            when [2,5,6] then return [mid_row, 1]
+              
+            when [3,4,5] then return [min_row, 2]
+              
+            when [3,4,6] then return [min_row, 1]
+              
+            when [3,5,7] then return [min_row, 1]
+              
+            when [1,3,4,7] then return [max_row, 1]
+              
+          end
+          
+          return [max_row,1]
+        end
     
 }
