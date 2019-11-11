@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class MarienbadBoard {
     
     public HashMap<Integer, Integer> rowsOfSticks;
-    public int[] twoSame;
+    public Integer[] twoSame;
 
     
     /* Rep invariant: 
@@ -25,7 +25,7 @@ public class MarienbadBoard {
             put(3, 3);
             put(4, 1);
         }};
-        this.twoSame = new int[2];
+        this.twoSame = new Integer[2];
     }
 
     /**
