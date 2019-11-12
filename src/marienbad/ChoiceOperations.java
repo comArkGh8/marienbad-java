@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.System.out;
+
 public class ChoiceOperations {
     
     /**
@@ -120,6 +122,7 @@ public class ChoiceOperations {
                     choice = Arrays.asList(maxRow, maxSticks - 1);
                     return choice; 
                 }
+                break;
                 
             case 4:
                 // check for double rows and change to min min k k

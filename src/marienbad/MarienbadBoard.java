@@ -35,6 +35,7 @@ public class MarienbadBoard {
     
     public MarienbadBoard(HashMap<Integer, Integer> stickList) {
         this.rowsOfSticks = stickList;
+        this.twoSame = new Integer[2];
     }
 
     

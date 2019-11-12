@@ -1,5 +1,7 @@
 package marienbad;
 
+import static java.lang.System.out;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,11 +62,16 @@ public class LosingSituations {
             return true;
         }
         
-        switch (RowOperations.getNumberNonZeroRows(stick_array)) {
+        int numberNonZero = RowOperations.getNumberNonZeroRows(stick_array);
+        
+        switch (numberNonZero) {
         
             case 2:  
                 if ((stick_array.get(0) > 1) && (RowOperations.arrayHasRepeatedRow(stick_array))) {
                     return true;
+                }
+                else {
+                    return false;
                 }
             
             case 3:
@@ -80,17 +87,24 @@ public class LosingSituations {
                 if (stickSet.equals(compareSetOne) || stickSet.equals(compareSetTwo)) {
                     return true;
                 }
-                
-                if ( (stick_array.get(0) == 1) && (sumOfSticks == 3)   || (sumOfSticks == 6) ) {
+                else if ( (stick_array.get(0) == 1) && (sumOfSticks == 3)   || (sumOfSticks == 6) ) {
                     return true;
                 }
+                else {
+                    return false;
+                }
+                
               
             case 4:
                 if (sumOfSticks == (2*stick_array.get(0) + 2*stick_array.get(2))) {
                     return true;
                 }
+                else {
+                    return false;
+                }
         }
-                  
+
+   
         return false;
         
     }

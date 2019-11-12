@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+import static java.lang.System.out;
 
 
 public class RowOperations {
@@ -105,7 +105,7 @@ public class RowOperations {
         HashMap<Integer, Integer> rowsSticksWhichRepeat = board.rowsOfSticks
                 .entrySet()
                 .stream()
-                .filter(x -> x.getValue() == 3 )
+                .filter(x -> counts.get(x.getValue()) >1 )
                 .collect(
                         Collectors.toMap(
                             Map.Entry::getKey, 
