@@ -626,6 +626,24 @@ public class ChoiceOperationsTest {
         assertEquals(bestChoice, cChoice);
     }
     
+    @Test
+    public void testChoice7331() {
+
+        final HashMap<Integer, Integer> initMap = new HashMap<Integer, Integer>() {{
+            put(1, 1);
+            put(2, 3);
+            put(3, 3);
+            put(4, 7);
+        }};
+        final MarienbadBoard initBoard = new MarienbadBoard(initMap);
+        
+        
+        List<Integer> cChoice = ChoiceOperations.bestChoice(initBoard);
+        
+        List<Integer> bestChoice = Arrays.asList(2,3); 
+        assertEquals(bestChoice, cChoice);
+    }
+    
 
     
 }

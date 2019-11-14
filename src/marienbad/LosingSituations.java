@@ -38,6 +38,7 @@ import java.util.Set;
 #   6,5,2,1
 #   6,4,3,1
 #   7,5,3,1
+#   make exception for 7331 (include in repeated row argument)
 */
 
 public class LosingSituations {
@@ -58,7 +59,7 @@ public class LosingSituations {
         
         // else we handle the situation in cases
         // the next belongs to 3 or 4 rows
-        if ((sumOfSticks == 14) || (sumOfSticks == 16)) {
+        if ((sumOfSticks == 14 && (!RowOperations.arrayHasRepeatedRow(stick_array))) || (sumOfSticks == 16)) {
             return true;
         }
         

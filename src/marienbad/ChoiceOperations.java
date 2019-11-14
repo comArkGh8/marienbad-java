@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.System.out;
 
 public class ChoiceOperations {
     
@@ -54,10 +55,9 @@ public class ChoiceOperations {
         if (sortedList.equals(compareList)) {
             Random r = new Random();
             int randomRow = r.nextInt(4) + 1;
-            int totalSticks = 1+2*(randomRow -1);
-            int randomSticks = r.nextInt(totalSticks)+1;
+            int numberSticks = 1;
             
-            choice = Arrays.asList(randomRow,randomSticks);
+            choice = Arrays.asList(randomRow,numberSticks);
             
             return choice;
         }
@@ -146,8 +146,10 @@ public class ChoiceOperations {
                 break;
                 
             case 4:
+                
                 // check for double rows and change to min min k k
                 if (RowOperations.hasRepeatedRow(gameBoard)) {
+                    
                     // first get other rows
                     Integer allRows[] = {1, 2, 3, 4}; 
                     Set<Integer> otherRowsSet = new HashSet<>(Arrays.asList(allRows));
